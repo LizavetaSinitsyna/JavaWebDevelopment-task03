@@ -12,6 +12,7 @@ package by.epamtc.sinitsyna.task1.bean;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import by.epamtc.sinitsyna.task1.exception.NonValidArrayException;
 import by.epamtc.sinitsyna.task1.exception.IndexOutOfBoundsException;
@@ -46,8 +47,26 @@ public class Array implements Serializable {
 		return copy(currentLength);
 	}
 
+	public Iterator<Integer> retriveValueIterator() {
+		Iterator<Integer> iterator = new Iterator<Integer>() {
+			private int element = 0;
+
+			@Override
+			public boolean hasNext() {
+				return value.length > element;
+			}
+
+			@Override
+			public Integer next() {
+				return value[element++];
+			}
+		};
+
+		return iterator;
+	}
+
 	public boolean setValue(int[] value) {
-		if (!isArrayValid(value)) {
+		if (isArrayValid(value)) {
 			this.value = value;
 			this.currentLength = value.length;
 			return true;
@@ -60,44 +79,70 @@ public class Array implements Serializable {
 		return currentLength;
 	}
 
-	public boolean setCurrentLength(int length) {
-		if (length >= 0) {
-			int lengthDif = length - this.currentLength;
-			if (lengthDif > 0) {
-				ensureCapacity(lengthDif);
-			}
-			this.currentLength = length;
+	public boolean setCurrentLength(int newLength) {
+		int lengthDif = newLength - currentLength;
+		if (newLength > currentLength && ensureCapacity(lengthDif)) {
+			currentLength = newLength;
 			return true;
 		}
-
 		return false;
 
 	}
 
+	public int retrieveCapacity() {
+		return value.length;
+	}
+
 	public int get(int index) throws IndexOutOfBoundsException {
-		if (index >= currentLength || index < 0) {
+		if (!isIndexValid(index)) {
 			throw new IndexOutOfBoundsException("Index can't be less than 0 or larger than array's length.");
 		}
 		return value[index];
 	}
 
 	public boolean add(int element) {
-		if (ensureCapacity(MIN_FREE_CAPACITY)) {
-			value[currentLength] = element;
+		return insert(element, currentLength);
+	}
+
+	public boolean insert(int element, int position) {
+		if ((position == currentLength || isIndexValid(position)) && ensureCapacity(MIN_FREE_CAPACITY)) {
+			shiftToTheRight(position);
+			value[position] = element;
 			currentLength++;
 			return true;
 		}
 		return false;
 	}
 
+	private void shiftToTheRight(int addedElementPosition) {
+		for (int i = currentLength; i > addedElementPosition; --i) {
+			value[i] = value[i - 1];
+		}
+	}
+
 	public void remove() {
-		if (currentLength > 0) {
+		remove(currentLength - 1);
+	}
+
+	public boolean remove(int position) {
+		if (currentLength > 0 && isIndexValid(position)) {
+			if (position < currentLength - 1) {
+				shiftToTheLeft(position);
+			}
 			currentLength--;
+			return true;
+		}
+		return false;
+	}
+
+	private void shiftToTheLeft(int deletedElementPosition) {
+		for (int i = deletedElementPosition; i < currentLength; ++i) {
+			value[i] = value[i + 1];
 		}
 	}
 
 	public boolean contains(int element) {
-		if (isEmpty() || !isArrayValid(value)) {
+		if (isEmpty()) {
 			return false;
 		}
 		for (int i = 0; i < currentLength; i++) {
@@ -276,6 +321,10 @@ public class Array implements Serializable {
 
 	private boolean isArrayValid(int[] value) {
 		return value != null;
+	}
+
+	private boolean isIndexValid(int index) {
+		return index >= 0 && index < currentLength;
 	}
 
 	public boolean isEmpty() {

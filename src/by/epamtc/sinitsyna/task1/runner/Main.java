@@ -32,7 +32,7 @@ public class Main {
 		Array randomArray = arrayInput.generateArray();
 		ArrayView.printArray("RandomArray: ", randomArray);
 
-		// 1. Сортировать массив тримя способами.
+		// 1. Сортировать массив тремя способами.
 		System.out.println("Bubble sort demo >");
 		consoleArray.bubbleSort(true);
 		ArrayView.printArray("ConsoleArray sorted in asscending order: ", consoleArray);
@@ -73,7 +73,7 @@ public class Main {
 			System.out.println("Prime numbers search in ConcoleArray demo >");
 			Array primeNumbers;
 
-			primeNumbers = ArrayLogic.findSimpleNumbers(consoleArray);
+			primeNumbers = ArrayLogic.findPrimeNumbers(consoleArray);
 
 			ArrayView.printArray("Prime numbers from ConsoleArray: ", primeNumbers);
 

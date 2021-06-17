@@ -25,7 +25,7 @@ public class JaggedArrayLogic {
 	}
 
 	public static void sortByMaxElementInLine(int[][] array, boolean increase) {
-		if (array == null) {
+		if (!isArrayValid(array)) {
 			return;
 		}
 
@@ -50,7 +50,7 @@ public class JaggedArrayLogic {
 	}
 
 	public static void sortByMinElementInLine(int[][] array, boolean increase) {
-		if (array == null) {
+		if (!isArrayValid(array)) {
 			return;
 		}
 

@@ -17,7 +17,7 @@ import by.epamtc.sinitsyna.task1.bean.Array;
 public class ArrayView {
 	public static void printArray(String message, Array array) {
 		System.out.print(message);
-		if (array.isEmpty()) {
+		if (array == null || array.isEmpty()) {
 			System.out.println("Array is empty");
 			return;
 		}

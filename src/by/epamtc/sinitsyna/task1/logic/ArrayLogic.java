@@ -46,10 +46,12 @@ public class ArrayLogic {
 	}
 
 	public static int findMax(Array array) throws NonValidArrayException {
-		int max = Integer.MIN_VALUE;
 		if (isEmptyOrNull(array)) {
 			throw new NonValidArrayException("Array can't be null or with length = 0.");
 		}
+
+		int max = Integer.MIN_VALUE;
+
 		try {
 			max = array.get(0);
 			for (int i = 1; i < array.getCurrentLength(); i++) {
@@ -68,7 +70,9 @@ public class ArrayLogic {
 		if (isEmptyOrNull(array)) {
 			throw new NonValidArrayException("Array can't be null or with length = 0.");
 		}
+
 		int min = Integer.MAX_VALUE;
+
 		try {
 			min = array.get(0);
 			for (int i = 1; i < array.getCurrentLength(); i++) {
@@ -83,27 +87,27 @@ public class ArrayLogic {
 
 	}
 
-	public static Array findSimpleNumbers(Array array) throws NonValidArrayException {
+	public static Array findPrimeNumbers(Array array) throws NonValidArrayException {
 		if (isNull(array)) {
 			throw new NonValidArrayException("Array can't be null.");
 		}
 		int number;
-		Array simpleNumbers = new Array();
+		Array primeNumbers = new Array();
 		try {
 			for (int i = 0; i < array.getCurrentLength(); i++) {
 				number = (array.get(i));
-				if (isSimple(number)) {
-					simpleNumbers.add(number);
+				if (isPrime(number)) {
+					primeNumbers.add(number);
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
 			e.getMessage();
 		}
-		return simpleNumbers;
+		return primeNumbers;
 
 	}
 
-	public static boolean isSimple(int number) {
+	public static boolean isPrime(int number) {
 		if (number < 2) {
 			return false;
 		}
