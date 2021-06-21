@@ -10,13 +10,19 @@
 
 package by.epamtc.sinitsyna.task1.logic;
 
+import java.util.Comparator;
+
 import by.epamtc.sinitsyna.task1.bean.Array;
 import by.epamtc.sinitsyna.task1.exception.IndexOutOfBoundsException;
 import by.epamtc.sinitsyna.task1.exception.NonValidArrayException;
 
-public class ArrayLogic {
+public class ArraySearchLogic {
+
+	private static final int MIN_INTEGER_WITH_3_DIGITS = 100;
+	private static final int MAX_INTEGER_WITH_3_DIGITS = 999;
+
 	public static int binarySearch(Array sortedArray, int element) {
-		if (isNull(sortedArray)) {
+		if (ArrayValidation.isNull(sortedArray)) {
 			return -1;
 		}
 		int middle;
@@ -37,7 +43,7 @@ public class ArrayLogic {
 					right = middle - 1;
 				}
 			} catch (IndexOutOfBoundsException e) {
-				System.out.println(e.getMessage());
+				e.printStackTrace();
 			}
 
 		}
@@ -46,53 +52,46 @@ public class ArrayLogic {
 	}
 
 	public static int findMax(Array array) throws NonValidArrayException {
-		if (isEmptyOrNull(array)) {
-			throw new NonValidArrayException("Array can't be null or with length = 0.");
-		}
-
-		int max = Integer.MIN_VALUE;
-
-		try {
-			max = array.get(0);
-			for (int i = 1; i < array.getCurrentLength(); i++) {
-				if (array.get(i) > max) {
-					max = array.get(i);
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			e.getMessage();
-		}
-		return max;
+		return find(array, new MaxElementComparator());
 
 	}
 
 	public static int findMin(Array array) throws NonValidArrayException {
-		if (isEmptyOrNull(array)) {
-			throw new NonValidArrayException("Array can't be null or with length = 0.");
-		}
-
-		int min = Integer.MAX_VALUE;
-
-		try {
-			min = array.get(0);
-			for (int i = 1; i < array.getCurrentLength(); i++) {
-				if (array.get(i) < min) {
-					min = array.get(i);
-				}
-			}
-		} catch (IndexOutOfBoundsException e) {
-			e.getMessage();
-		}
-		return min;
+		return find(array, new MinElementComparator());
 
 	}
 
-	public static Array findPrimeNumbers(Array array) throws NonValidArrayException {
-		if (isNull(array)) {
-			throw new NonValidArrayException("Array can't be null.");
+	private static int find(Array array, Comparator<Integer> comparator) throws NonValidArrayException {
+		if (ArrayValidation.isEmptyOrNull(array)) {
+			throw new NonValidArrayException("Array can't be null or with length = 0.");
 		}
+
+		int result = Integer.MIN_VALUE;
+
+		try {
+			result = array.get(0);
+
+			for (int element : array) {
+
+				if (comparator.compare(element, result) == 1) {
+					result = element;
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public static Array findPrimeNumbers(Array array) {
 		int number;
 		Array primeNumbers = new Array();
+		
+		if (ArrayValidation.isNull(array)) {
+			return primeNumbers;
+		}
+
 		try {
 			for (int i = 0; i < array.getCurrentLength(); i++) {
 				number = (array.get(i));
@@ -101,13 +100,13 @@ public class ArrayLogic {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
-			e.getMessage();
+			e.printStackTrace();
 		}
 		return primeNumbers;
 
 	}
 
-	public static boolean isPrime(int number) {
+	private static boolean isPrime(int number) {
 		if (number < 2) {
 			return false;
 		}
@@ -121,7 +120,7 @@ public class ArrayLogic {
 
 	public static Array findFibonacciNumbers(Array array) throws NonValidArrayException {
 		Array fibonacciNumbers = new Array();
-		if (isNull(array)) {
+		if (ArrayValidation.isNull(array)) {
 			return fibonacciNumbers;
 		}
 
@@ -149,10 +148,10 @@ public class ArrayLogic {
 
 	}
 
-	public static Array findNumbersWith3UniqueDigits(Array array) throws NonValidArrayException {
+	public static Array findNumbersWith3UniqueDigits(Array array) {
 		Array result = new Array();
 
-		if (isNull(array)) {
+		if (ArrayValidation.isNull(array)) {
 			return result;
 		}
 
@@ -161,12 +160,13 @@ public class ArrayLogic {
 		try {
 			for (int i = 0; i < array.getCurrentLength(); i++) {
 				number = Math.abs(array.get(i));
-				if (number > 100 && number < 999 && containsUniqueDigits(number)) {
+				if (number >= MIN_INTEGER_WITH_3_DIGITS && number <= MAX_INTEGER_WITH_3_DIGITS
+						&& containsUniqueDigits(number)) {
 					result.add(number);
 				}
 			}
 		} catch (IndexOutOfBoundsException e) {
-			e.getMessage();
+			e.printStackTrace();
 		}
 
 		return result;
@@ -192,13 +192,5 @@ public class ArrayLogic {
 			}
 		}
 		return true;
-	}
-
-	private static boolean isEmptyOrNull(Array array) {
-		return isNull(array) || array.isEmpty();
-	}
-
-	private static boolean isNull(Array array) {
-		return array == null;
 	}
 }

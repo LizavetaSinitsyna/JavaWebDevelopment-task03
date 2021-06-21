@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import by.epamtc.sinitsyna.task1.bean.Array;
+import by.epamtc.sinitsyna.validation.ValidationHelper;
 import by.epamtc.sinitsyna.input.UserDataInput;
 
 public class ArrayInput {
@@ -26,7 +27,7 @@ public class ArrayInput {
 	public Array requestArray() {
 		int element;
 		int size = input.requestInt("Please, enter array size >>");
-		while (!isPositive(size)) {
+		while (!ValidationHelper.isPositive(size)) {
 			System.out.println("Array size must be positive.");
 			size = input.requestInt("Please, enter array size >>");
 		}
@@ -68,10 +69,6 @@ public class ArrayInput {
 		}
 		return array;
 
-	}
-
-	private boolean isPositive(int number) {
-		return number >= 0;
 	}
 
 }

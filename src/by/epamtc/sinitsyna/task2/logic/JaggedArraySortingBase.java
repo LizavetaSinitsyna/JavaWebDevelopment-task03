@@ -3,23 +3,8 @@
 • в порядке возрастания (убывания) максимальных элементов строк матрицы;
 • в порядке возрастания (убывания) минимальных элементов строк матрицы.*/
 
-package by.epamtc.sinitsyna.task2.presentation;
+package by.epamtc.sinitsyna.task2.logic;
 
-import java.util.Arrays;
-
-import by.epamtc.sinitsyna.validation.ValidationHelper;
-
-public class JaggedArrayView {
-	public void printArray(String message, int[][] array) {
-		if (message != null) {
-			System.out.println(message);
-		}
-		if (!ValidationHelper.isArrayValid(array)) {
-			System.out.println("Array is empty.");
-		}
-		for (int i = 0; i < array.length; i++) {
-			System.out.println(Arrays.toString(array[i]));
-		}
-	}
-
+public interface JaggedArraySortingBase {
+	int[] retriveSortingBase(int[][] array);
 }

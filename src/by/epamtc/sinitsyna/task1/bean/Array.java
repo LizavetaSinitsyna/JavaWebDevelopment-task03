@@ -14,10 +14,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import by.epamtc.sinitsyna.task1.exception.NonValidArrayException;
 import by.epamtc.sinitsyna.task1.exception.IndexOutOfBoundsException;
+import by.epamtc.sinitsyna.validation.ValidationHelper;
 
-public class Array implements Serializable {
+public class Array implements Serializable, Iterable<Integer> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,32 +28,44 @@ public class Array implements Serializable {
 	private int currentLength;
 
 	public Array() {
-		value = new int[DEFAULT_CAPACITY];
+		setValueByDefault();
 	}
 
-	public Array(int[] value) throws NonValidArrayException {
-		if (!isArrayValid(value)) {
-			throw new NonValidArrayException("Array can't be equal to null");
+	public Array(int[] value) {
+		if (!ValidationHelper.isArrayNull(value)) {
+			this.currentLength = value.length;
+			this.value = copy(value.length, value);
+		} else {
+			setValueByDefault();
 		}
-		this.value = value;
-		this.currentLength = value.length;
+
 	}
 
 	public Array(int size) {
-		value = new int[size];
+		if (ValidationHelper.isPositive(size)) {
+			value = new int[size];
+		} else {
+			setValueByDefault();
+		}
+
+	}
+
+	private void setValueByDefault() {
+		value = new int[DEFAULT_CAPACITY];
 	}
 
 	public int[] getValue() {
-		return copy(currentLength);
+		return copy(currentLength, value);
 	}
 
-	public Iterator<Integer> retriveValueIterator() {
+	@Override
+	public Iterator<Integer> iterator() {
 		Iterator<Integer> iterator = new Iterator<Integer>() {
 			private int element = 0;
 
 			@Override
 			public boolean hasNext() {
-				return value.length > element;
+				return currentLength > element;
 			}
 
 			@Override
@@ -66,9 +78,9 @@ public class Array implements Serializable {
 	}
 
 	public boolean setValue(int[] value) {
-		if (isArrayValid(value)) {
-			this.value = value;
+		if (!ValidationHelper.isArrayNull(value)) {
 			this.currentLength = value.length;
+			this.value = copy(currentLength, value);
 			return true;
 		}
 		return false;
@@ -102,6 +114,14 @@ public class Array implements Serializable {
 
 	public boolean add(int element) {
 		return insert(element, currentLength);
+	}
+
+	public boolean set(int element, int position) {
+		if (isIndexValid(position)) {
+			value[position] = element;
+			return true;
+		}
+		return false;
 	}
 
 	public boolean insert(int element, int position) {
@@ -155,138 +175,6 @@ public class Array implements Serializable {
 
 	}
 
-	public void bubbleSort(boolean increase) {
-		for (int i = 0; i < currentLength - 1; ++i) {
-			for (int j = 0; j < currentLength - i - 1; ++j) {
-				if (increase && value[j] > value[j + 1] || !increase && value[j] < value[j + 1]) {
-					swap(j, j + 1, value);
-
-				}
-
-			}
-		}
-	}
-
-	private void swap(int index1, int index2, int[] array) {
-		int temp = array[index1];
-		array[index1] = array[index2];
-		array[index2] = temp;
-	}
-
-	public void mergeSort(boolean increase) {
-		executeMergeSort(increase, 0, currentLength - 1, value);
-	}
-
-	private void executeMergeSort(boolean increase, int left, int right, int[] array) {
-		if (left < right) {
-			int middle = left + (right - left) / 2;
-
-			executeMergeSort(increase, left, middle, array);
-			executeMergeSort(increase, middle + 1, right, array);
-
-			merge(increase, left, middle, right, array);
-		}
-	}
-
-	private void merge(boolean increase, int left, int middle, int right, int[] array) {
-		int leftLength = middle - left + 1;
-		int rightLength = right - middle;
-
-		int[] leftSubArray = new int[leftLength];
-		int[] rightSubArray = new int[rightLength];
-
-		for (int i = 0; i < leftLength; ++i) {
-			leftSubArray[i] = array[left + i];
-		}
-		for (int i = 0; i < rightLength; ++i) {
-			rightSubArray[i] = array[middle + 1 + i];
-		}
-
-		int i = 0;
-		int j = 0;
-		int k = left;
-
-		while (i < leftLength && j < rightLength) {
-			if (increase) {
-				if (leftSubArray[i] > rightSubArray[j]) {
-					array[k] = rightSubArray[j];
-					j++;
-				} else {
-					array[k] = leftSubArray[i];
-					i++;
-				}
-			} else {
-				if (leftSubArray[i] > rightSubArray[j]) {
-					array[k] = leftSubArray[i];
-					i++;
-				} else {
-					array[k] = rightSubArray[j];
-					j++;
-				}
-			}
-			k++;
-		}
-
-		while (i < leftLength) {
-			array[k] = leftSubArray[i];
-			++i;
-			++k;
-		}
-
-		while (j < rightLength) {
-			array[k] = rightSubArray[j];
-			++j;
-			++k;
-		}
-
-	}
-
-	public void quickSort(boolean increase) {
-		executeQuickSort(increase, 0, currentLength - 1);
-	}
-
-	private void executeQuickSort(boolean increase, int left, int right) {
-		int i = left;
-		int j = right;
-
-		int pivot = value[left + (right - left) / 2];
-
-		while (i <= j) {
-			if (increase) {
-				while (value[i] < pivot) {
-					++i;
-				}
-
-				while (value[j] > pivot) {
-					--j;
-				}
-			} else {
-				while (value[i] > pivot) {
-					++i;
-				}
-
-				while (value[j] < pivot) {
-					--j;
-				}
-			}
-
-			if (i <= j) {
-				swap(i, j, value);
-				++i;
-				--j;
-			}
-
-		}
-
-		if (left < j) {
-			executeQuickSort(increase, left, j);
-		}
-
-		if (i < right) {
-			executeQuickSort(increase, i, right);
-		}
-	}
-
 	private boolean ensureCapacity(int elementsAmountToAdd) {
 		if (value.length > Integer.MAX_VALUE - elementsAmountToAdd) {
 			return false;
@@ -304,31 +192,27 @@ public class Array implements Serializable {
 		} else {
 			newCapacity = value.length * 2;
 		}
-		value = copy(newCapacity);
+		value = copy(newCapacity, value);
 
 		return true;
 
 	}
 
-	private int[] copy(int requiredCapacity) {
+	private int[] copy(int requiredCapacity, int[] array) {
 		int[] arrayCopy = new int[requiredCapacity];
 		for (int i = 0; i < currentLength; i++) {
-			arrayCopy[i] = value[i];
+			arrayCopy[i] = array[i];
 		}
 		return arrayCopy;
 
 	}
 
-	private boolean isArrayValid(int[] value) {
-		return value != null;
+	public boolean isEmpty() {
+		return currentLength == 0;
 	}
 
 	private boolean isIndexValid(int index) {
-		return index >= 0 && index < currentLength;
-	}
-
-	public boolean isEmpty() {
-		return currentLength == 0;
+		return ValidationHelper.isPositive(index) && index < currentLength;
 	}
 
 	@Override
@@ -351,8 +235,11 @@ public class Array implements Serializable {
 		Array other = (Array) obj;
 		if (currentLength != other.currentLength)
 			return false;
-		if (!Arrays.equals(value, other.value))
-			return false;
+		for (int i = 0; i < currentLength; i++) {
+			if (value[i] != other.value[i]) {
+				return false;
+			}
+		}
 		return true;
 	}
 
