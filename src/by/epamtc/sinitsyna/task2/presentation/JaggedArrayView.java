@@ -14,7 +14,7 @@ public class JaggedArrayView {
 		if (message != null) {
 			System.out.println(message);
 		}
-		if (!ValidationHelper.isArrayValid(array)) {
+		if (ValidationHelper.isJaggedArrayEmptyOrNull(array)) {
 			System.out.println("Array is empty.");
 		}
 		for (int i = 0; i < array.length; i++) {

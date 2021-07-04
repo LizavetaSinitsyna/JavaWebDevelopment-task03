@@ -11,7 +11,7 @@ public class MaxElementInLineSortingBase implements JaggedArraySortingBase {
 
 	@Override
 	public int[] retriveSortingBase(int[][] array) {
-		if (!ValidationHelper.isArrayValid(array)) {
+		if (ValidationHelper.isJaggedArrayEmptyOrNull(array)) {
 			return null;
 		}
 
@@ -19,7 +19,7 @@ public class MaxElementInLineSortingBase implements JaggedArraySortingBase {
 		int[] maxElements = new int[array.length];
 
 		for (int i = 0; i < array.length; i++) {
-			if (ValidationHelper.isArrayValid(array[i])) {
+			if (!ValidationHelper.isArrayEmptyOrNull(array[i])) {
 				max = array[i][0];
 				for (int j = 1; j < array[i].length; j++) {
 					if (array[i][j] > max) {

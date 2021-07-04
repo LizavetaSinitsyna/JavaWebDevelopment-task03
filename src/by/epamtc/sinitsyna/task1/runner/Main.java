@@ -10,6 +10,10 @@
 
 package by.epamtc.sinitsyna.task1.runner;
 
+import java.util.Comparator;
+
+import by.epamtc.sinitsyna.comparator.AscendingOrderComparator;
+import by.epamtc.sinitsyna.comparator.DescendingOrderComparator;
 import by.epamtc.sinitsyna.input.UserDataInput;
 import by.epamtc.sinitsyna.task1.bean.Array;
 import by.epamtc.sinitsyna.task1.exception.NonValidArrayException;
@@ -24,6 +28,9 @@ public class Main {
 		ArrayInput arrayInput = new ArrayInput();
 		UserDataInput input = new UserDataInput();
 
+		Comparator<Integer> ascendingOrder = new AscendingOrderComparator();
+		Comparator<Integer> descendingOrder = new DescendingOrderComparator();
+
 		// 7. Заполнения элементов массива и с консоли, и с файла и с помощью генерации
 		// случайных чисел.
 		Array consoleArray = arrayInput.requestArray();
@@ -35,21 +42,21 @@ public class Main {
 
 		// 1. Сортировать массив тремя способами.
 		System.out.println("Bubble sort demo >");
-		ArraySortLogic.bubbleSort(consoleArray, true);
+		ArraySortLogic.bubbleSort(consoleArray, ascendingOrder);
 		ArrayView.printArray("ConsoleArray sorted in asscending order: ", consoleArray);
-		ArraySortLogic.bubbleSort(consoleArray, false);
+		ArraySortLogic.bubbleSort(consoleArray, descendingOrder);
 		ArrayView.printArray("ConsoleArray sorted in descending order: ", consoleArray);
 
 		System.out.println("Merge sort demo >");
-		ArraySortLogic.mergeSort(fileArray, true);
+		ArraySortLogic.mergeSort(fileArray, ascendingOrder);
 		ArrayView.printArray("FileArray sorted in ascending order: ", fileArray);
-		ArraySortLogic.mergeSort(fileArray, false);
+		ArraySortLogic.mergeSort(fileArray, descendingOrder);
 		ArrayView.printArray("FileArray sorted in descending order: ", fileArray);
 
 		System.out.println("Quick sort demo >");
-		ArraySortLogic.quickSort(randomArray, false);
+		ArraySortLogic.quickSort(randomArray, descendingOrder);
 		ArrayView.printArray("RandomArray sorted in descending order: ", randomArray);
-		ArraySortLogic.quickSort(randomArray, true);
+		ArraySortLogic.quickSort(randomArray, ascendingOrder);
 		ArrayView.printArray("RandomArray sorted in ascending order: ", randomArray);
 
 		// 2. Осуществлять поиск элемента массива (использовать алгоритм бинарного

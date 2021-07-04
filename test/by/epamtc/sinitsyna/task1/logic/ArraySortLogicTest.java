@@ -1,11 +1,12 @@
-package by.epamtc.sinitsyna.task1.test;
+package by.epamtc.sinitsyna.task1.logic;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import by.epamtc.sinitsyna.comparator.AscendingOrderComparator;
+import by.epamtc.sinitsyna.comparator.DescendingOrderComparator;
 import by.epamtc.sinitsyna.task1.bean.Array;
-import by.epamtc.sinitsyna.task1.logic.ArraySortLogic;
 
 public class ArraySortLogicTest {
 	private Array array;
@@ -21,15 +22,24 @@ public class ArraySortLogicTest {
 	@Test
 	public void testBubbleSortInAscendingOrder() {
 		Array actual = array;
-		ArraySortLogic.bubbleSort(actual, true);
+		ArraySortLogic.bubbleSort(actual, new AscendingOrderComparator());
 		Assert.assertEquals(expectedForAscedingOrder, actual);
+
+	}
+
+	@Test
+	public void testBubbleSortByPassingEmptyArray() {
+		Array expected = new Array();
+		Array actual = new Array();
+		ArraySortLogic.bubbleSort(actual, new AscendingOrderComparator());
+		Assert.assertEquals(expected, actual);
 
 	}
 
 	@Test
 	public void testBubbleSortInDescendingOrder() {
 		Array actual = array;
-		ArraySortLogic.bubbleSort(actual, false);
+		ArraySortLogic.bubbleSort(actual, new DescendingOrderComparator());
 		Assert.assertEquals(expectedForDescedingOrder, actual);
 
 	}
@@ -37,29 +47,47 @@ public class ArraySortLogicTest {
 	@Test
 	public void testMergeSortInAscendingOrder() {
 		Array actual = array;
-		ArraySortLogic.mergeSort(actual, true);
+		ArraySortLogic.mergeSort(actual, new AscendingOrderComparator());
 		Assert.assertEquals(expectedForAscedingOrder, actual);
 	}
 
 	@Test
 	public void testMergeSortInDescendingOrder() {
 		Array actual = array;
-		ArraySortLogic.mergeSort(actual, false);
+		ArraySortLogic.mergeSort(actual, new DescendingOrderComparator());
 		Assert.assertEquals(expectedForDescedingOrder, actual);
+	}
+	
+	@Test
+	public void testMergeSortByPassingNullArray() {
+		Array expected = null;
+		Array actual = null;
+		ArraySortLogic.mergeSort(actual, new DescendingOrderComparator());
+		Assert.assertEquals(expected, actual);
+
 	}
 
 	@Test
 	public void testQuickSortInAscendingOrder() {
 		Array actual = array;
-		ArraySortLogic.quickSort(actual, true);
+		ArraySortLogic.quickSort(actual, new AscendingOrderComparator());
 		Assert.assertEquals(expectedForAscedingOrder, actual);
 	}
 
 	@Test
 	public void testQuickSortInDescendingOrder() {
 		Array actual = array;
-		ArraySortLogic.quickSort(actual, false);
+		ArraySortLogic.quickSort(actual, new DescendingOrderComparator());
 		Assert.assertEquals(expectedForDescedingOrder, actual);
+	}
+	
+	@Test
+	public void testQuickSortByPassingEmptyArray() {
+		Array expected = new Array();
+		Array actual = new Array();
+		ArraySortLogic.quickSort(actual, new DescendingOrderComparator());
+		Assert.assertEquals(expected, actual);
+
 	}
 
 }

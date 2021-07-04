@@ -10,18 +10,20 @@
 
 package by.epamtc.sinitsyna.task1.logic;
 
+import java.util.Comparator;
+
 import by.epamtc.sinitsyna.task1.bean.Array;
 import by.epamtc.sinitsyna.task1.exception.IndexOutOfBoundsException;
 
 public class ArraySortLogic {
-	public static void bubbleSort(Array array, boolean increase) {
+	public static void bubbleSort(Array array, Comparator<Integer> comparator) {
 		if (ArrayValidation.isEmptyOrNull(array)) {
 			return;
 		}
 		for (int i = 0; i < array.getCurrentLength() - 1; ++i) {
 			for (int j = 0; j < array.getCurrentLength() - i - 1; ++j) {
 				try {
-					if (increase && array.get(j) > array.get(j + 1) || !increase && array.get(j) < array.get(j + 1)) {
+					if (comparator.compare(array.get(j), array.get(j + 1)) == 1) {
 						swap(j, j + 1, array);
 					}
 				} catch (IndexOutOfBoundsException e) {
@@ -44,25 +46,25 @@ public class ArraySortLogic {
 
 	}
 
-	public static void mergeSort(Array array, boolean increase) {
+	public static void mergeSort(Array array, Comparator<Integer> comparator) {
 		if (ArrayValidation.isEmptyOrNull(array)) {
 			return;
 		}
-		executeMergeSort(increase, 0, array.getCurrentLength() - 1, array);
+		executeMergeSort(comparator, 0, array.getCurrentLength() - 1, array);
 	}
 
-	private static void executeMergeSort(boolean increase, int left, int right, Array array) {
+	private static void executeMergeSort(Comparator<Integer> comparator, int left, int right, Array array) {
 		if (left < right) {
 			int middle = left + (right - left) / 2;
 
-			executeMergeSort(increase, left, middle, array);
-			executeMergeSort(increase, middle + 1, right, array);
+			executeMergeSort(comparator, left, middle, array);
+			executeMergeSort(comparator, middle + 1, right, array);
 
-			merge(increase, left, middle, right, array);
+			merge(comparator, left, middle, right, array);
 		}
 	}
 
-	private static void merge(boolean increase, int left, int middle, int right, Array array) {
+	private static void merge(Comparator<Integer> comparator, int left, int middle, int right, Array array) {
 		int leftLength = middle - left + 1;
 		int rightLength = right - middle;
 
@@ -86,22 +88,13 @@ public class ArraySortLogic {
 		int k = left;
 
 		while (i < leftLength && j < rightLength) {
-			if (increase) {
-				if (leftSubArray[i] > rightSubArray[j]) {
-					array.set(rightSubArray[j], k);
-					j++;
-				} else {
-					array.set(leftSubArray[i], k);
-					i++;
-				}
+
+			if (comparator.compare(leftSubArray[i], rightSubArray[j]) == 1) {
+				array.set(rightSubArray[j], k);
+				j++;
 			} else {
-				if (leftSubArray[i] > rightSubArray[j]) {
-					array.set(leftSubArray[i], k);
-					i++;
-				} else {
-					array.set(rightSubArray[j], k);
-					j++;
-				}
+				array.set(leftSubArray[i], k);
+				i++;
 			}
 			k++;
 		}
@@ -120,14 +113,14 @@ public class ArraySortLogic {
 
 	}
 
-	public static void quickSort(Array array, boolean increase) {
+	public static void quickSort(Array array, Comparator<Integer> comparator) {
 		if (ArrayValidation.isEmptyOrNull(array)) {
 			return;
 		}
-		executeQuickSort(array, increase, 0, array.getCurrentLength() - 1);
+		executeQuickSort(array, comparator, 0, array.getCurrentLength() - 1);
 	}
 
-	private static void executeQuickSort(Array array, boolean increase, int left, int right) {
+	private static void executeQuickSort(Array array, Comparator<Integer> comparator, int left, int right) {
 		int i = left;
 		int j = right;
 
@@ -136,22 +129,13 @@ public class ArraySortLogic {
 			pivot = array.get(left + (right - left) / 2);
 
 			while (i <= j) {
-				if (increase) {
-					while (array.get(i) < pivot) {
-						++i;
-					}
 
-					while (array.get(j) > pivot) {
-						--j;
-					}
-				} else {
-					while (array.get(i) > pivot) {
-						++i;
-					}
+				while (comparator.compare(array.get(i), pivot) == -1) {
+					++i;
+				}
 
-					while (array.get(j) < pivot) {
-						--j;
-					}
+				while (comparator.compare(array.get(j), pivot) == 1) {
+					--j;
 				}
 
 				if (i <= j) {
@@ -163,11 +147,11 @@ public class ArraySortLogic {
 			}
 
 			if (left < j) {
-				executeQuickSort(array, increase, left, j);
+				executeQuickSort(array, comparator, left, j);
 			}
 
 			if (i < right) {
-				executeQuickSort(array, increase, i, right);
+				executeQuickSort(array, comparator, i, right);
 			}
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();

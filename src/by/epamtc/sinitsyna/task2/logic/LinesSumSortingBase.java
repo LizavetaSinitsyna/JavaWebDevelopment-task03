@@ -11,12 +11,12 @@ public class LinesSumSortingBase implements JaggedArraySortingBase {
 
 	@Override
 	public int[] retriveSortingBase(int[][] array) {
-		if (!ValidationHelper.isArrayValid(array)) {
+		if (ValidationHelper.isJaggedArrayEmptyOrNull(array)) {
 			return null;
 		}
 		int[] linesSum = new int[array.length];
 		for (int i = 0; i < array.length; i++) {
-			if (ValidationHelper.isArrayValid(array[i])) {
+			if (!ValidationHelper.isArrayEmptyOrNull(array[i])) {
 				for (int j = 0; j < array[i].length; j++) {
 					linesSum[i] += array[i][j];
 				}

@@ -5,10 +5,14 @@
 
 package by.epamtc.sinitsyna.task2.logic;
 
+import java.util.Comparator;
+
+import by.epamtc.sinitsyna.validation.ValidationHelper;
+
 public class JaggedArrayLogic {
 
-	public static void sort(int[][] array, JaggedArraySortingBase base, boolean increase) {
-		if (base == null || array == null) {
+	public static void sort(int[][] array, JaggedArraySortingBase base, Comparator<Integer> comparator) {
+		if (ValidationHelper.isNull(base) || ValidationHelper.isNull(array) || ValidationHelper.isNull(comparator)) {
 			return;
 		}
 		int[] sortingBase = base.retriveSortingBase(array);
@@ -17,8 +21,7 @@ public class JaggedArrayLogic {
 		}
 		for (int i = 0; i < sortingBase.length - 1; ++i) {
 			for (int j = 0; j < sortingBase.length - i - 1; ++j) {
-				if (increase && sortingBase[j] > sortingBase[j + 1]
-						|| !increase && sortingBase[j] < sortingBase[j + 1]) {
+				if (comparator.compare(sortingBase[j], sortingBase[j + 1]) == 1) {
 					swap(j, j + 1, array);
 					swap(j, j + 1, sortingBase);
 
